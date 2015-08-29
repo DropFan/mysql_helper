@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # author:Tiger <DropFan@Gmail.com>
 
-from db_mysql import db_mysql
+from pysql import pysql
 from var_dump import var_dump as dump
 from pprint import pprint
 

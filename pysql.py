@@ -3,7 +3,9 @@
 # author:Tiger <DropFan@Gmail.com>
 
 import MySQLdb
-#from var_dump import var_dump
+from var_dump import var_dump
+
+__author__ = 'Tiger <DropFan@Gmail.com>'
 
 class pysql(object):
     """
@@ -45,6 +47,7 @@ class pysql(object):
         else:
             print 'initial connect faild. Please try function connect() or check your config'
         print 'mysql initial function done.'
+
 
     def connect(self):
         """
@@ -160,7 +163,7 @@ class pysql(object):
             #     self.conn.commit()
             return self.rowcount()
         except MySQLdb.Error, e:
-            print 'MySQLdb insert error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
+            print 'MySQLdb update error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
     def delete(self, tablename, **args):
@@ -175,14 +178,42 @@ class pysql(object):
         else:
             limit = ''
         sql = 'DELETE FROM `%s` WHERE %s %s' % (tablename, where, limit)
-        print sql
+        print 'DELETE SQL: ', sql
         try:
             res = self.cur.execute(sql)
             if self.autocommit:
                 self.conn.commit()
             return self.rowcount()
         except MySQLdb.Error, e:
-            print 'MySQLdb insert error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
+            print 'MySQLdb delete error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
+        return False
+
+    def select(self, tablename, fields,**args):
+        if not self.is_connected():
+            return False
+
+        if isinstance(fields, tuple) or isinstance(fields, list):
+            fields = ', '.join(['`%s`' % x for x in fields])
+
+        if 'where' in args and isinstance(args['where'], str):
+            where = args['where']
+        else:
+            where = '1'
+
+        if 'limit' in args and isinstance(args['limit'], str):
+            limit = 'LIMIT %s' % args['limit']
+        else:
+            limit = ''
+
+        sql = 'SELECT %s FROM `%s` WHERE %s %s' % (fields, tablename, where, limit)
+        print 'SELECT SQL: ',sql
+        try:
+            res = self.cur.execute(sql)
+            if self.autocommit:
+                self.conn.commit()
+            return self.rowcount()
+        except MySQLdb.Error, e:
+            print 'MySQLdb select error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
     def rowcount(self):
@@ -213,12 +244,12 @@ class pysql(object):
         try:
             res = self.cur.fetchall()
             desc =self.cur.description
-            # print 'res',res
-            # print 'desc:', desc
-            # var_dump(desc)
+            # print 'res',res # debug
+            # print 'desc:', desc # debug
+            # var_dump(desc) # debug
             dic = []
             for row in res:
-                print 'row', row
+                # print 'row', row # debug
                 _dic = {}
                 for i in range(0,len(row)):
                     _dic[desc[i][0]] = str(row[i])
@@ -281,7 +312,6 @@ db = pysql(config)
 res=db.charset('utf8')
 
 # db.query('show tables')
-
 # db.query('select * from `test`')
 
 print '------------------------'
@@ -290,12 +320,16 @@ print 'res',res
 u={
     # 'id':12345,
     'name':'test',
-    'pass':'pass',
+    'pass':'pass1',
     'email':'ab@test',
     'reg_time':int(time.time()),
     'last_login':int(time.time())
 }
-print db.update('user',u,where='`id`>12345',limit='2')
+x = ['id', 'name', 'pass', 'email', 'reg_time', 'last_login']
+# print db.update('user',u,where='`id`>12345',limit='2')
+print db.select('user',x,where='`id`>12345',limit='2')
+print db.fetch_one()
+exit()
 # print db.insert('user',u)
 print db.commit()
 

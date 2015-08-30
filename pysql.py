@@ -15,11 +15,11 @@ class pysql(object):
 
     # connect config
     config = {
-        'host'      : 'localhost',
-        'port'      : 3306,
-        'user'      : 'root',
-        'pass'      : '123456',
-        'db'        : 'test',
+        'db_host'   : 'localhost',
+        'db_port'   : 3306,
+        'db_user'   : 'root',
+        'db_pass'   : '123456',
+        'db_name'   : 'test',
         'charset'   : 'utf8'
     }
 
@@ -30,16 +30,22 @@ class pysql(object):
     conn = None
     cur  = None
 
-    def __init__(self, config, **args):
+    def __init__(self, **kwargs):
         """
             initialize for db_mysql instance
         """
+        super(pysql, self).__init__()
 
-        for k in config.keys():
-            if self.config[k]:
-                self.config[k] = config[k]
-        if 'autocommit' in args and isinstance(args['autocommit'], bool):
-            self.autocommit = args['autocommit']
+        for k in kwargs:
+            print 'init kwargs[%s]:%s' % (k, kwargs[k])
+            if k in self.config.keys() and kwargs[k] != self.config[k]:
+                self.config[k] = kwargs[k]
+
+        # for k in config.keys():
+        #     if self.config[k]:
+        #         self.config[k] = config[k]
+        if 'autocommit' in kwargs and isinstance(kwargs['autocommit'], bool):
+            self.autocommit = kwargs['autocommit']
         self.conn = self.connect()
         if self.conn:
             print 'initial connect ok'
@@ -49,18 +55,23 @@ class pysql(object):
         print 'mysql initial function done.'
 
 
-    def connect(self):
+
+    def connect(self,**kwargs):
         """
             connect to mysql server
         """
+        for k in kwargs:
+            print 'connect kwargs[%s]:%s' % (k, kwargs[k])
+            if k in self.config.keys() and kwargs[k] != self.config[k]:
+                self.config[k] = kwargs[k]
         if self.conn:
             return self.conn
         try:
-            self.conn = MySQLdb.connect(host=self.config['host'],
-                                        port=self.config['port'],
-                                        user=self.config['user'],
-                                        passwd=self.config['pass'],
-                                        db=self.config['db'],
+            self.conn = MySQLdb.connect(host=self.config['db_host'],
+                                        port=self.config['db_port'],
+                                        user=self.config['db_user'],
+                                        passwd=self.config['db_pass'],
+                                        db=self.config['db_name'],
                                         charset=self.config['charset'])
             print 'mysql connect ok'
             self.cur = self.conn.cursor()
@@ -73,7 +84,7 @@ class pysql(object):
             print repr(e)
         return False
 
-    def select_db(self,db):
+    def select_db(self, db):
         if not self.is_connected():
             return False
         try:
@@ -83,7 +94,7 @@ class pysql(object):
             print 'select_db error : %s' % e
         return False
 
-    def charset(self,charset):
+    def charset(self, charset):
         if not self.is_connected():
             return False
         try:
@@ -134,19 +145,19 @@ class pysql(object):
             print 'MySQLdb insert error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def update(self, tablename, data, **args):
+    def update(self, tablename, data, **kwargs):
         if not self.is_connected():
             return False
         if isinstance(data, dict):
             field = ','.join("`%s`='%s'" % (k,data[k]) for k in data)
-            if 'where' in args and isinstance(args['where'], str):
-                where = args['where']
+            if 'where' in kwargs and isinstance(kwargs['where'], str):
+                where = kwargs['where']
             elif 'id' in data.keys():
                 where = 'id = %s' % data['id']
             else:
                 where = '1'
-            if 'limit' in args and isinstance(args['limit'], str):
-                limit = 'LIMIT %s' % args['limit']
+            if 'limit' in kwargs and isinstance(kwargs['limit'], str):
+                limit = 'LIMIT %s' % kwargs['limit']
             else:
                 limit = ''
             sql = "UPDATE `%s` SET %s WHERE %s %s" % (tablename, field, where, limit)
@@ -166,15 +177,15 @@ class pysql(object):
             print 'MySQLdb update error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def delete(self, tablename, **args):
+    def delete(self, tablename, **kwargs):
         if not self.is_connected():
             return False
-        if 'where' in args and isinstance(args['where'], str):
-            where = args['where']
+        if 'where' in kwargs and isinstance(kwargs['where'], str):
+            where = kwargs['where']
         else:
             where = '1'
-        if 'limit' in args and isinstance(args['limit'], str):
-            limit = 'LIMIT %s' % args['limit']
+        if 'limit' in kwargs and isinstance(kwargs['limit'], str):
+            limit = 'LIMIT %s' % kwargs['limit']
         else:
             limit = ''
         sql = 'DELETE FROM `%s` WHERE %s %s' % (tablename, where, limit)
@@ -188,20 +199,20 @@ class pysql(object):
             print 'MySQLdb delete error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def select(self, tablename, fields,**args):
+    def select(self, tablename, fields,**kwargs):
         if not self.is_connected():
             return False
 
         if isinstance(fields, tuple) or isinstance(fields, list):
             fields = ', '.join(['`%s`' % x for x in fields])
 
-        if 'where' in args and isinstance(args['where'], str):
-            where = args['where']
+        if 'where' in kwargs and isinstance(kwargs['where'], str):
+            where = kwargs['where']
         else:
             where = '1'
 
-        if 'limit' in args and isinstance(args['limit'], str):
-            limit = 'LIMIT %s' % args['limit']
+        if 'limit' in kwargs and isinstance(kwargs['limit'], str):
+            limit = 'LIMIT %s' % kwargs['limit']
         else:
             limit = ''
 

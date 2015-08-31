@@ -5,6 +5,8 @@
 from usermodel import userModel
 from var_dump import var_dump as dump
 from pprint import pprint
+# from time import *
+import time,datetime
 
 def main():
     print 'this is test function.'
@@ -18,9 +20,9 @@ def main():
     # pprint(user)
     # dump(user)
 
-    user2 = userModel(2)
+    u = userModel()
     print user
-    print user2
+    print u
     # user2.id=123
     # user.id=2
 
@@ -29,17 +31,29 @@ def main():
     # pprint(user2.data)
     print '-'*80
     print 'end main()'
-    a = userModel()
-    b = userModel()
-    # print a.tid, b.tid
-    a.data['id'] = 1
-    b.data['id'] = 2
-    print a.data
-    print b.data
+    print '-'*80
+
+    print u.name
+    u.data={
+        # 'id':199,
+        'name':'hello',
+        'pass':'xxxxxx',
+        'email':'hello@python.org',
+        'reg_time':time.time(),
+        'last_login':time.time()
+    }
+    print u.name
     print '-'*80
     pprint(user.data)
-    pprint(user2.data)
-
+    print '-'*80
+    pprint(u.data)
+    print '-'*80
+    rows = userModel.select(where='`id` > 12345', order='`id` desc', limit='0,2')
+    pprint(rows)
+    print '='*80
+    x = userModel(12368)
+    print x.data
+    print x.delete()
 
 
 

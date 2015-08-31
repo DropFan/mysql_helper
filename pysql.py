@@ -181,14 +181,17 @@ class pysql(object):
     def delete(self, tableName, **kwargs):
         if not self.is_connected():
             return False
+
         if 'where' in kwargs and isinstance(kwargs['where'], str):
             where = kwargs['where']
         else:
-            where = '1'
+            where = '1 = 2'
+
         if 'limit' in kwargs and isinstance(kwargs['limit'], str):
             limit = 'LIMIT %s' % kwargs['limit']
         else:
             limit = ''
+
         sql = 'DELETE FROM `%s` WHERE %s %s' % (tableName, where, limit)
         print 'DELETE SQL: ', sql
         try:

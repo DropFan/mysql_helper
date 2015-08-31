@@ -37,7 +37,7 @@ class pysql(object):
         super(pysql, self).__init__()
 
         for k in kwargs:
-            print 'init kwargs[%s]:%s' % (k, kwargs[k])
+            # print 'init kwargs[%s]:%s' % (k, kwargs[k])
             if k in self.config.keys() and kwargs[k] != self.config[k]:
                 self.config[k] = kwargs[k]
 
@@ -82,6 +82,7 @@ class pysql(object):
         except Exception, e:
             print 'connect error :'
             print repr(e)
+        print 'pysql connect() done.'
         return False
 
     def select_db(self, db):

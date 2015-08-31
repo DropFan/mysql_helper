@@ -206,6 +206,8 @@ class pysql(object):
 
         if isinstance(fields, tuple) or isinstance(fields, list):
             fields = ', '.join(['`%s`' % x for x in fields])
+        else:
+            fields = '*'
 
         if 'where' in kwargs and isinstance(kwargs['where'], str):
             where = kwargs['where']

@@ -214,17 +214,17 @@ class pysql(object):
         else:
             where = ''
 
-        if 'limit' in kwargs and isinstance(kwargs['limit'], str):
-            limit = 'LIMIT %s' % kwargs['limit']
-        else:
-            limit = ''
-
         if 'order' in kwargs and isinstance(kwargs['order'], str):
             order = 'ORDER BY %s' % kwargs['order']
         else:
             order = ''
 
-        sql = 'SELECT %s FROM `%s` %s %s %s' % (fields, tableName, where, limit, order)
+        if 'limit' in kwargs and isinstance(kwargs['limit'], str):
+            limit = 'LIMIT %s' % kwargs['limit']
+        else:
+            limit = ''
+
+        sql = 'SELECT %s FROM `%s` %s %s %s' % (fields, tableName, where, order, limit)
         print 'SELECT SQL: ',sql
         try:
             res = self.cur.execute(sql)

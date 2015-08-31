@@ -115,7 +115,7 @@ class pysql(object):
             print 'MySQLdb execute error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def insert(self, tablename, data):
+    def insert(self, tableName, data):
         if not self.is_connected():
             return False
         # data = 'INSERT INTO '
@@ -128,9 +128,9 @@ class pysql(object):
             #     values.append('\'' + str(data[key]) + '\'')
             fields = ','.join(['`%s`'% x for x in data.keys()])
             values = ','.join(["'%s'"% x for x in data.values()])
-            sql = 'INSERT INTO `%s` (%s) VALUES (%s)'% (tablename, fields, values)
+            sql = 'INSERT INTO `%s` (%s) VALUES (%s)'% (tableName, fields, values)
         elif isinstance(data, str):
-            sql = 'INSERT INTO `%s` %s'%(tablename, data)
+            sql = 'INSERT INTO `%s` %s'%(tableName, data)
         else:
             print 'Invalid parameter type (data must be dict or string)'
             return False
@@ -146,7 +146,7 @@ class pysql(object):
             print 'MySQLdb insert error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def update(self, tablename, data, **kwargs):
+    def update(self, tableName, data, **kwargs):
         if not self.is_connected():
             return False
         if isinstance(data, dict):
@@ -161,7 +161,7 @@ class pysql(object):
                 limit = 'LIMIT %s' % kwargs['limit']
             else:
                 limit = ''
-            sql = "UPDATE `%s` SET %s WHERE %s %s" % (tablename, field, where, limit)
+            sql = "UPDATE `%s` SET %s WHERE %s %s" % (tableName, field, where, limit)
         elif isinstance(data, str):
             sql = data
         else:
@@ -171,14 +171,14 @@ class pysql(object):
         # exit()
         try:
             res = self.cur.execute(sql)
-            # if self.autocommit:
-            #     self.conn.commit()
+            if self.autocommit:
+                self.conn.commit()
             return self.rowcount()
         except MySQLdb.Error, e:
             print 'MySQLdb update error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def delete(self, tablename, **kwargs):
+    def delete(self, tableName, **kwargs):
         if not self.is_connected():
             return False
         if 'where' in kwargs and isinstance(kwargs['where'], str):
@@ -189,7 +189,7 @@ class pysql(object):
             limit = 'LIMIT %s' % kwargs['limit']
         else:
             limit = ''
-        sql = 'DELETE FROM `%s` WHERE %s %s' % (tablename, where, limit)
+        sql = 'DELETE FROM `%s` WHERE %s %s' % (tableName, where, limit)
         print 'DELETE SQL: ', sql
         try:
             res = self.cur.execute(sql)
@@ -200,7 +200,7 @@ class pysql(object):
             print 'MySQLdb delete error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def select(self, tablename, fields,**kwargs):
+    def select(self, tableName, fields,**kwargs):
         if not self.is_connected():
             return False
 
@@ -217,7 +217,7 @@ class pysql(object):
         else:
             limit = ''
 
-        sql = 'SELECT %s FROM `%s` WHERE %s %s' % (fields, tablename, where, limit)
+        sql = 'SELECT %s FROM `%s` WHERE %s %s' % (fields, tableName, where, limit)
         print 'SELECT SQL: ',sql
         try:
             res = self.cur.execute(sql)

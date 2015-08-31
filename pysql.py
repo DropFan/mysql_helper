@@ -200,7 +200,7 @@ class pysql(object):
             print 'MySQLdb delete error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def select(self, tableName, fields,**kwargs):
+    def select(self, tableName, fields='*',**kwargs):
         if not self.is_connected():
             return False
 
@@ -210,16 +210,21 @@ class pysql(object):
             fields = '*'
 
         if 'where' in kwargs and isinstance(kwargs['where'], str):
-            where = kwargs['where']
+            where = 'WHERE %s' % kwargs['where']
         else:
-            where = '1'
+            where = ''
 
         if 'limit' in kwargs and isinstance(kwargs['limit'], str):
             limit = 'LIMIT %s' % kwargs['limit']
         else:
             limit = ''
 
-        sql = 'SELECT %s FROM `%s` WHERE %s %s' % (fields, tableName, where, limit)
+        if 'order' in kwargs and isinstance(kwargs['order'], str):
+            order = 'ORDER BY %s' % kwargs['order']
+        else:
+            order = ''
+
+        sql = 'SELECT %s FROM `%s` %s %s %s' % (fields, tableName, where, limit, order)
         print 'SELECT SQL: ',sql
         try:
             res = self.cur.execute(sql)

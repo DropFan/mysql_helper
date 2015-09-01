@@ -2,8 +2,9 @@
 # -*- coding:utf-8 -*-
 # author:Tiger <DropFan@Gmail.com>
 
-from pysql import pysql as mdb
+__author__ = 'Tiger <DropFan@Gmail.com>'
 
+from mysql_helper import mysql_helper as mdb
 
 class model(object):
     """docstring for model"""
@@ -11,7 +12,7 @@ class model(object):
     # _data = {}
     dataModel = {}
 
-    # pysql instance
+    # db instance
     __db = mdb(db_host='localhost', db_user='root', db_pass='123456', db_name='test', autocommit=True)
 
     def __init__(self, id=-1, **kwargs):

@@ -31,9 +31,6 @@ class model(object):
             data = self.__fetch_by_id()
             if isinstance(data, dict):self.data = data
 
-
-
-
     def __fetch_by_id(self):
         fields= ', '.join(['`%s`' % k for k in self.dataModel.keys()])
         # sql = "SELECT %s FROM `%s` WHERE `id` = '%d'" % (fields, self.tableName, self.id)
@@ -63,7 +60,6 @@ class model(object):
             return True if ret else False
         else:
             return False
-
 
     def delete(self):
         print 'delete'
@@ -118,7 +114,6 @@ class model(object):
         else:
             pass
 
-
     def __setattr__ (self, key, value):
         print 'set k:',key,'v:',value
         if key in self.dataModel.keys() and isinstance(value, self.dataModel[key]) and key != 'id':
@@ -129,3 +124,5 @@ class model(object):
             return None
         else:
             super(model, self).__setattr__(key, value)
+
+# end class model

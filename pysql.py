@@ -54,8 +54,6 @@ class pysql(object):
             print 'initial connect faild. Please try function connect() or check your config'
         print 'mysql initial function done.'
 
-
-
     def connect(self,**kwargs):
         """
             connect to mysql server
@@ -151,16 +149,19 @@ class pysql(object):
             return False
         if isinstance(data, dict):
             field = ','.join("`%s`='%s'" % (k,data[k]) for k in data)
+
             if 'where' in kwargs and isinstance(kwargs['where'], str):
                 where = kwargs['where']
             elif 'id' in data.keys():
                 where = 'id = %s' % data['id']
             else:
                 where = '1'
+
             if 'limit' in kwargs and isinstance(kwargs['limit'], str):
                 limit = 'LIMIT %s' % kwargs['limit']
             else:
                 limit = ''
+
             sql = "UPDATE `%s` SET %s WHERE %s %s" % (tableName, field, where, limit)
         elif isinstance(data, str):
             sql = data
@@ -317,4 +318,4 @@ class pysql(object):
     def __del__(self):
         self.close()
 
-# end class
+# end class pysql

@@ -2,12 +2,12 @@
 # -*- coding:utf-8 -*-
 # author:Tiger <DropFan@Gmail.com>
 
-import MySQLdb
-from var_dump import var_dump
-
 __author__ = 'Tiger <DropFan@Gmail.com>'
 
-class pysql(object):
+import MySQLdb
+# from var_dump import var_dump
+
+class mysql_helper(object):
     """
         docstring for db_mysql
         waiting for finish...
@@ -34,7 +34,7 @@ class pysql(object):
         """
             initialize for db_mysql instance
         """
-        super(pysql, self).__init__()
+        super(mysql_helper, self).__init__()
 
         for k in kwargs:
             # print 'init kwargs[%s]:%s' % (k, kwargs[k])
@@ -80,7 +80,7 @@ class pysql(object):
         except Exception, e:
             print 'connect error :'
             print repr(e)
-        print 'pysql connect() done.'
+        print 'connect() done.'
         return False
 
     def select_db(self, db):
@@ -318,4 +318,4 @@ class pysql(object):
     def __del__(self):
         self.close()
 
-# end class pysql
+# end class mysql_helper

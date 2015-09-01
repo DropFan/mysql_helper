@@ -4,7 +4,9 @@ It will be better.
 
 ## Requirements:
 MySQLdb
+
 you can install it via pip:
+
 `pip install MySQL-python`
 
 ## Contact me:

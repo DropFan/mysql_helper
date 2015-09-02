@@ -20,7 +20,8 @@ class mysql_helper(object):
         'db_user'   : 'root',
         'db_pass'   : '123456',
         'db_name'   : 'test',
-        'charset'   : 'utf8'
+        'charset'   : 'utf8',
+        'read_default_file' : '/etc/my.cnf'
     }
 
     # if auto commit() when insert/update/delete
@@ -70,7 +71,9 @@ class mysql_helper(object):
                                         user=self.config['db_user'],
                                         passwd=self.config['db_pass'],
                                         db=self.config['db_name'],
-                                        charset=self.config['charset'])
+                                        charset=self.config['charset'],
+                                        read_default_file=self.config['read_default_file']
+                                        )
             print 'mysql connect ok'
             self.cur = self.conn.cursor()
             print 'cur ok'

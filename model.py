@@ -13,7 +13,7 @@ class model(object):
     dataModel = {}
 
     # db instance
-    __db = mdb(db_host='localhost', db_port=3306 ,db_user='root', db_pass='123456', db_name='test', autocommit=True)
+    __db = mdb(db_host='localhost', db_port=3306 ,db_user='root', db_pass='123456', db_name='test', read_default_file='/etc/my.cnf', autocommit=True)
 
     def __init__(self, id=-1, **kwargs):
         super(model, self).__init__()

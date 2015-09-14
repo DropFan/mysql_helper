@@ -11,6 +11,9 @@ __author__ = 'Tiger <DropFan@Gmail.com>'
 
 
 class model(object):
+    """docstring for model
+
+    """
 
     # sub_class should set this attribute.
     # tableName = ''
@@ -22,6 +25,8 @@ class model(object):
     __db = None
 
     def __init__(self, id=-1, **kwargs):
+        """construct method
+
         Args:
             id (int, optional): primary key in table
             **kwargs: other fields in table
@@ -45,6 +50,8 @@ class model(object):
             data = self.__fetch_by_id()
             if isinstance(data, dict):
                 self.data = data
+        else:
+            self.data = {}
             for key in self.dataModel.keys():
                 if key in kwargs and isinstance(kwargs[key], self.dataModel[key]):
                     self.data[key] = kwargs[key]

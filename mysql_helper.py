@@ -33,7 +33,10 @@ class mysql_helper(object):
 
     def __init__(self, **kwargs):
         """
-            initialize for db_mysql instance
+        initialize for db_mysql instance
+
+        Args:
+            **kwargs: some connect params
         """
         super(mysql_helper, self).__init__()
 
@@ -57,7 +60,10 @@ class mysql_helper(object):
 
     def connect(self, **kwargs):
         """
-            connect to mysql server
+        connect to mysql server
+
+        Args:
+            **kwargs: some connect params
         """
         for k in kwargs:
             print 'connect kwargs[%s]:%s' % (k, kwargs[k])
@@ -87,16 +93,33 @@ class mysql_helper(object):
         return False
 
     def select_db(self, db):
+        """select_db
+
+        Args:
+            db (str): database name
+
+        Returns:
+            bool: true or false
+        """
         if not self.is_connected():
             return False
         try:
             res = self.conn.select_db(db)
-            return True
+            if res:
+                return True
         except Exception, e:
             print 'select_db error : %s' % e
         return False
 
     def charset(self, charset):
+        """change charset
+
+        Args:
+            charset (str):charset
+
+        Returns:
+            bool: true or false
+        """
         if not self.is_connected():
             return False
         try:
@@ -177,7 +200,8 @@ class mysql_helper(object):
             res = self.cur.execute(sql)
             if self.autocommit:
                 self.conn.commit()
-            return self.rowcount()
+            if res:
+                return self.rowcount()
         except MySQLdb.Error, e:
             print 'MySQLdb update error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
@@ -202,12 +226,13 @@ class mysql_helper(object):
             res = self.cur.execute(sql)
             if self.autocommit:
                 self.conn.commit()
-            return self.rowcount()
+            if res:
+                return self.rowcount()
         except MySQLdb.Error, e:
             print 'MySQLdb delete error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False
 
-    def select(self, tableName, fields='*',**kwargs):
+    def select(self, tableName, fields='*', **kwargs):
         if not self.is_connected():
             return False
 
@@ -237,7 +262,8 @@ class mysql_helper(object):
             res = self.cur.execute(sql)
             if self.autocommit:
                 self.conn.commit()
-            return self.rowcount()
+            if res:
+                return self.rowcount()
         except MySQLdb.Error, e:
             print 'MySQLdb select error! SQL:%s\nmysql error[%d]:%s' % (sql, e[0], e[1])
         return False

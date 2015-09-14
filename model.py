@@ -2,46 +2,55 @@
 # -*- coding:utf-8 -*-
 # author:Tiger <DropFan@Gmail.com>
 
+
+# import config
 from mysql_helper import mysql_helper as mdb
+from config import mysql_config as db_config
 
 __author__ = 'Tiger <DropFan@Gmail.com>'
 
 
 class model(object):
-    """docstring for model"""
+
+    # sub_class should set this attribute.
+    # tableName = ''
 
     # _data = {}
     dataModel = {}
 
     # db instance
-
-    # __db = mdb(db_host='localhost', db_port=3306 ,db_user='root', db_pass='123456', db_name='test', read_default_file='/etc/my.cnf', autocommit=True)
     __db = None
 
     def __init__(self, id=-1, **kwargs):
+        Args:
+            id (int, optional): primary key in table
+            **kwargs: other fields in table
+        """
         super(model, self).__init__()
         # self.arg = arg
         # print 'model'
         # self.tableName = ''
         # self.data = {}
         # self.datamodel = {}
-        self.__db = mdb(db_host='localhost',
-                        db_port=3306,
-                        db_user='root',
-                        db_pass='123456',
-                        db_name='test',
-                        read_default_file='/etc/my.cnf',
+
+        self.__db = mdb(db_host=db_config['db_host'],
+                        db_port=db_config['db_port'],
+                        db_user=db_config['db_user'],
+                        db_pass=db_config['db_pass'],
+                        db_name=db_config['db_name'],
                         autocommit=True)
-        self.data = {}
-        for key in self.dataModel.keys():
-            self.data[key] = self.dataModel[key]
-        del(self.data['id'])
 
         if isinstance(id, int) and id != -1:
             self.id = id
             data = self.__fetch_by_id()
             if isinstance(data, dict):
                 self.data = data
+            for key in self.dataModel.keys():
+                if key in kwargs and isinstance(kwargs[key], self.dataModel[key]):
+                    self.data[key] = kwargs[key]
+                else:
+                    self.data[key] = self.dataModel[key]
+            del(self.data['id'])
 
     def __fetch_by_id(self):
         fields = ', '.join(['`%s`' % k for k in self.dataModel.keys()])
@@ -125,6 +134,7 @@ class model(object):
             return self.data[key]
             # super(model, self).__getattribute__(self.data[key])
         else:
+            # super(model, self).__getattribute__(self, key)
             pass
 
     def __setattr__(self, key, value):

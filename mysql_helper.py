@@ -2,10 +2,10 @@
 # -*- coding:utf-8 -*-
 # author:Tiger <DropFan@Gmail.com>
 
+import MySQLdb
+
 __author__ = 'Tiger <DropFan@Gmail.com>'
 
-import MySQLdb
-# from var_dump import var_dump
 
 class mysql_helper(object):
     """
@@ -15,13 +15,13 @@ class mysql_helper(object):
 
     # connect config
     config = {
-        'db_host'   : 'localhost',
-        'db_port'   : 3306,
-        'db_user'   : 'root',
-        'db_pass'   : '123456',
-        'db_name'   : 'test',
-        'charset'   : 'utf8',
-        'read_default_file' : '/etc/my.cnf'
+        'db_host': 'localhost',
+        'db_port': 3306,
+        'db_user': 'root',
+        'db_pass': '123456',
+        'db_name': 'test',
+        'charset': 'utf8',
+        'read_default_file': '/etc/my.cnf'
     }
 
     # if auto commit() when insert/update/delete
@@ -29,7 +29,7 @@ class mysql_helper(object):
 
     # connect and cursor instance of MySQLdb
     conn = None
-    cur  = None
+    cur = None
 
     def __init__(self, **kwargs):
         """
@@ -55,7 +55,7 @@ class mysql_helper(object):
             print 'initial connect faild. Please try function connect() or check your config'
         print 'mysql initial function done.'
 
-    def connect(self,**kwargs):
+    def connect(self, **kwargs):
         """
             connect to mysql server
         """
@@ -127,11 +127,11 @@ class mysql_helper(object):
             # for key in data.keys():
             #     fields.append('`' + key + '`')
             #     values.append('\'' + str(data[key]) + '\'')
-            fields = ','.join(['`%s`'% x for x in data.keys()])
-            values = ','.join(["'%s'"% x for x in data.values()])
-            sql = 'INSERT INTO `%s` (%s) VALUES (%s)'% (tableName, fields, values)
+            fields = ','.join(['`%s`' % x for x in data.keys()])
+            values = ','.join(["'%s'" % x for x in data.values()])
+            sql = 'INSERT INTO `%s` (%s) VALUES (%s)' % (tableName, fields, values)
         elif isinstance(data, str):
-            sql = 'INSERT INTO `%s` %s'%(tableName, data)
+            sql = 'INSERT INTO `%s` %s' % (tableName, data)
         else:
             print 'Invalid parameter type (data must be dict or string)'
             return False
@@ -151,7 +151,7 @@ class mysql_helper(object):
         if not self.is_connected():
             return False
         if isinstance(data, dict):
-            field = ','.join("`%s`='%s'" % (k,data[k]) for k in data)
+            field = ','.join("`%s`='%s'" % (k, data[k]) for k in data)
 
             if 'where' in kwargs and isinstance(kwargs['where'], str):
                 where = kwargs['where']
@@ -232,7 +232,7 @@ class mysql_helper(object):
             limit = ''
 
         sql = 'SELECT %s FROM `%s` %s %s %s' % (fields, tableName, where, order, limit)
-        print 'SELECT SQL: ',sql
+        print 'SELECT SQL: ', sql
         try:
             res = self.cur.execute(sql)
             if self.autocommit:
@@ -269,7 +269,7 @@ class mysql_helper(object):
             return False
         try:
             res = self.cur.fetchall()
-            desc =self.cur.description
+            desc = self.cur.description
             # print 'res',res # debug
             # print 'desc:', desc # debug
             # var_dump(desc) # debug
@@ -277,7 +277,7 @@ class mysql_helper(object):
             for row in res:
                 # print 'row', row # debug
                 _dic = {}
-                for i in range(0,len(row)):
+                for i in range(0, len(row)):
                     _dic[desc[i][0]] = str(row[i])
                 dic.append(_dic)
             return dic
@@ -295,7 +295,7 @@ class mysql_helper(object):
             res = self.cur.fetchone()
             desc = self.cur.description
             dic = {}
-            for i in range(0,len(res)):
+            for i in range(0, len(res)):
                 dic[desc[i][0]] = str(res[i])
             return dic
         except MySQLdb.Error, e:

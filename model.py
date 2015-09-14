@@ -2,9 +2,10 @@
 # -*- coding:utf-8 -*-
 # author:Tiger <DropFan@Gmail.com>
 
+from mysql_helper import mysql_helper as mdb
+
 __author__ = 'Tiger <DropFan@Gmail.com>'
 
-from mysql_helper import mysql_helper as mdb
 
 class model(object):
     """docstring for model"""
@@ -13,7 +14,9 @@ class model(object):
     dataModel = {}
 
     # db instance
-    __db = mdb(db_host='localhost', db_port=3306 ,db_user='root', db_pass='123456', db_name='test', read_default_file='/etc/my.cnf', autocommit=True)
+
+    # __db = mdb(db_host='localhost', db_port=3306 ,db_user='root', db_pass='123456', db_name='test', read_default_file='/etc/my.cnf', autocommit=True)
+    __db = None
 
     def __init__(self, id=-1, **kwargs):
         super(model, self).__init__()
@@ -22,22 +25,31 @@ class model(object):
         # self.tableName = ''
         # self.data = {}
         # self.datamodel = {}
+        self.__db = mdb(db_host='localhost',
+                        db_port=3306,
+                        db_user='root',
+                        db_pass='123456',
+                        db_name='test',
+                        read_default_file='/etc/my.cnf',
+                        autocommit=True)
         self.data = {}
         for key in self.dataModel.keys():
-            self.data[key] =  self.dataModel[key]
+            self.data[key] = self.dataModel[key]
         del(self.data['id'])
 
         if isinstance(id, int) and id != -1:
             self.id = id
             data = self.__fetch_by_id()
-            if isinstance(data, dict):self.data = data
+            if isinstance(data, dict):
+                self.data = data
 
     def __fetch_by_id(self):
-        fields= ', '.join(['`%s`' % k for k in self.dataModel.keys()])
+        fields = ', '.join(['`%s`' % k for k in self.dataModel.keys()])
         # sql = "SELECT %s FROM `%s` WHERE `id` = '%d'" % (fields, self.tableName, self.id)
         db = self.__db
         if db.select(self.tableName, fields, where='`id` = %d' % self.id, limit='1'):
             ret = db.fetch_one_dict()
+            ret['id'] = int(ret['id'])
         else:
             ret = False
         print 'fetch ', ret
@@ -76,7 +88,7 @@ class model(object):
     # write later...
 
     @classmethod
-    def select(cls,fields='*', **kwargs):
+    def select(cls, fields='*', **kwargs):
         print 'select'
 
         if isinstance(fields, tuple) or isinstance(fields, list):
@@ -107,7 +119,7 @@ class model(object):
         return False
 
     def __getattr__(self, key):
-        print 'get',key
+        print 'get', key
 
         if key in self.data.keys():
             return self.data[key]
@@ -115,13 +127,13 @@ class model(object):
         else:
             pass
 
-    def __setattr__ (self, key, value):
-        print 'set k:',key,'v:',value
+    def __setattr__(self, key, value):
+        print 'set k:', key, 'v:', value
         if key in self.dataModel.keys() and isinstance(value, self.dataModel[key]) and key != 'id':
-            print 'data[%s]:%s' %(key,value)
+            print 'data[%s]:%s' % (key, value)
             self.data[key] = value
         elif key == 'tableName':
-            print 'You can\'t modify this attribute! (%s)'% key
+            print 'You can\'t modify this attribute! (%s)' % key
             return None
         else:
             super(model, self).__setattr__(key, value)

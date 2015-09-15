@@ -13,6 +13,10 @@ __author__ = 'Tiger <DropFan@Gmail.com>'
 class model(object):
     """docstring for model
 
+    Attributes:
+        data (dict): fields in table
+        dataModel (dict): fields in table but values are its type
+        id (int): id (primary key in table)
     """
 
     # sub_class should set this attribute.
@@ -22,7 +26,12 @@ class model(object):
     dataModel = {}
 
     # db instance
-    __db = None
+    __db = mdb(db_host=db_config['db_host'],
+               db_port=db_config['db_port'],
+               db_user=db_config['db_user'],
+               db_pass=db_config['db_pass'],
+               db_name=db_config['db_name'],
+               autocommit=True)
 
     def __init__(self, id=-1, **kwargs):
         """construct method
@@ -65,7 +74,11 @@ class model(object):
         db = self.__db
         if db.select(self.tableName, fields, where='`id` = %d' % self.id, limit='1'):
             ret = db.fetch_one_dict()
-            ret['id'] = int(ret['id'])
+            for k in self.dataModel.keys():
+                if self.dataModel[k] == int:
+                    ret[k] = int(ret[k])
+                elif self.dataModel[k] == str:
+                    ret[k] = str(ret[k])
         else:
             ret = False
         print 'fetch ', ret
@@ -140,6 +153,8 @@ class model(object):
         if key in self.data.keys():
             return self.data[key]
             # super(model, self).__getattribute__(self.data[key])
+        elif key == 'data':
+            return self.data
         else:
             # super(model, self).__getattribute__(self, key)
             pass

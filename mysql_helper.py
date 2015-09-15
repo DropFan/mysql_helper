@@ -183,7 +183,9 @@ class mysql_helper(object):
             else:
                 where = '1'
 
-            if 'limit' in kwargs and isinstance(kwargs['limit'], str):
+            if 'limit' in kwargs \
+                and isinstance(kwargs['limit'], str) \
+                    and kwargs['limit'] != '':
                 limit = 'LIMIT %s' % kwargs['limit']
             else:
                 limit = ''
@@ -215,8 +217,10 @@ class mysql_helper(object):
         else:
             where = '1 = 2'
 
-        if 'limit' in kwargs and isinstance(kwargs['limit'], str):
-            limit = 'LIMIT %s' % kwargs['limit']
+        if 'limit' in kwargs \
+            and isinstance(kwargs['limit'], str) \
+                and kwargs['limit'] != '':
+                limit = 'LIMIT %s' % kwargs['limit']
         else:
             limit = ''
 

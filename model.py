@@ -98,7 +98,7 @@ class model(object):
         print 'update'
         if 'id' in self.data.keys() and isinstance(self.id, int):
             db = self.__db
-            ret = db.update(self.tableName, self.data, where='`id` = %d' % self.id, limit='1')
+            ret = db.update(self.tableName, self.data, where='`id` = %d' % self.id, limit='')
             return True if ret else False
         else:
             return False
@@ -107,7 +107,7 @@ class model(object):
         print 'delete'
         if 'id' in self.data.keys() and isinstance(self.id, int):
             db = self.__db
-            ret = db.delete(self.tableName, where='`id` = %d' % self.id, limit='1')
+            ret = db.delete(self.tableName, where='`id` = %d' % self.id, limit='')
             return True if ret else False
         else:
             return False

@@ -163,6 +163,10 @@ class model(object):
         print 'set k:', key, 'v:', value
         if key in self.dataModel.keys() and isinstance(value, self.dataModel[key]) and key != 'id':
             print 'data[%s]:%s' % (key, value)
+            if self.dataModel[key] == int:
+                value = int(value)
+            elif self.dataModel[key] == str:
+                value = str(value)
             self.data[key] = value
         elif key == 'tableName':
             print 'You can\'t modify this attribute! (%s)' % key

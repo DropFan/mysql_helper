@@ -4,6 +4,7 @@
 
 from model import model
 
+
 class userModel(model):
     """
         user model extends model
@@ -12,11 +13,11 @@ class userModel(model):
     tableName = 'user'
 
     dataModel = {
-        'id'        : int,
-        'name'      : str,
-        'pass'      : str,
-        'email'     : str,
-        'reg_time'  : int,
+        'id': int,
+        'name': str,
+        'pass': str,
+        'email': str,
+        'reg_time': int,
         'last_login': int
     }
 
@@ -31,6 +32,3 @@ class userModel(model):
         # }
         super(userModel, self).__init__(id)
         # print self.data
-
-
-

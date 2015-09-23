@@ -26,12 +26,12 @@ class model(object):
     dataModel = {}
 
     # db instance
-    __db = mdb(db_host=db_config['db_host'],
-               db_port=db_config['db_port'],
-               db_user=db_config['db_user'],
-               db_pass=db_config['db_pass'],
-               db_name=db_config['db_name'],
-               autocommit=True)
+    # __db = mdb(db_host=db_config['db_host'],
+    #            db_port=db_config['db_port'],
+    #            db_user=db_config['db_user'],
+    #            db_pass=db_config['db_pass'],
+    #            db_name=db_config['db_name'],
+    #            autocommit=True)
 
     def __init__(self, id=-1, **kwargs):
         """construct method
@@ -140,12 +140,22 @@ class model(object):
         else:
             limit = False
 
-        db = cls.__db
+        db = model.getDB()
         ret = db.select(cls.tableName, fields, where=where, order=order, limit=limit)
         if ret:
             rows = db.fetch_all_dict()
             return rows
         return False
+
+    @staticmethod
+    def getDB():
+        db = mdb(db_host=db_config['db_host'],
+                 db_port=db_config['db_port'],
+                 db_user=db_config['db_user'],
+                 db_pass=db_config['db_pass'],
+                 db_name=db_config['db_name'],
+                 autocommit=True)
+        return db
 
     def __getattr__(self, key):
         print 'get', key

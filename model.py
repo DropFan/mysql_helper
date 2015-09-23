@@ -47,12 +47,7 @@ class model(object):
         # self.data = {}
         # self.datamodel = {}
 
-        self.__db = mdb(db_host=db_config['db_host'],
-                        db_port=db_config['db_port'],
-                        db_user=db_config['db_user'],
-                        db_pass=db_config['db_pass'],
-                        db_name=db_config['db_name'],
-                        autocommit=True)
+        self.__db = model.getDB()
 
         if isinstance(id, int) and id != -1:
             self.id = id
@@ -120,10 +115,11 @@ class model(object):
     def select(cls, fields='*', **kwargs):
         print 'select'
 
+        ret = False
         if isinstance(fields, tuple) or isinstance(fields, list):
-            fields = ', '.join(['`%s`' % x for x in fields])
+            fields = fields
         else:
-            fields = ', '.join(['`%s`' % x for x in cls.dataModel.keys()])
+            fields = cls.dataModel.keys()
 
         if 'where' in kwargs and isinstance(kwargs['where'], str):
             where = kwargs['where']
@@ -144,8 +140,9 @@ class model(object):
         ret = db.select(cls.tableName, fields, where=where, order=order, limit=limit)
         if ret:
             rows = db.fetch_all_dict()
-            return rows
-        return False
+            ret = rows
+        del db
+        return ret
 
     @staticmethod
     def getDB():

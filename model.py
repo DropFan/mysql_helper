@@ -184,6 +184,8 @@ class model(object):
             print 'data[%s]:%s' % (key, value)
             if self.dataModel[key] == int:
                 value = int(value)
+            elif self.dataModel[key] == float:
+                value = float(value)
             elif self.dataModel[key] == str:
                 value = str(value)
             self.data[key] = value

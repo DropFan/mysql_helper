@@ -175,8 +175,7 @@ class model(object):
             return self.data[key]
             # super(model, self).__getattribute__(self.data[key])
         else:
-            # super(model, self).__getattribute__(self, key)
-            pass
+            super(model, self).__getattribute__(self, key)
 
     def __setattr__(self, key, value):
         print 'model->set k:', key, 'v:', value

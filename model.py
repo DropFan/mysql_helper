@@ -54,14 +54,6 @@ class model(object):
             data = self.__fetch_by_id()
             if isinstance(data, dict):
                 self.data = data
-        else:
-            self.data = {}
-            for key in self.dataModel.keys():
-                if key in kwargs and isinstance(kwargs[key], self.dataModel[key]):
-                    self.data[key] = kwargs[key]
-                else:
-                    self.data[key] = self.dataModel[key]
-            del(self.data['id'])
 
     def __fetch_by_id(self):
         fields = self.dataModel.keys()
@@ -175,7 +167,7 @@ class model(object):
             return self.data[key]
             # super(model, self).__getattribute__(self.data[key])
         else:
-            super(model, self).__getattribute__(self, key)
+            super(model, self).__getattribute__(key)
 
     def __setattr__(self, key, value):
         print 'model->set k:', key, 'v:', value

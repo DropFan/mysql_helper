@@ -46,7 +46,7 @@ class model(object):
         # self.tableName = ''
         # self.data = {}
         # self.datamodel = {}
-
+        self.data = self.init_data()
         self.__db = model.getDB()
 
         if isinstance(id, int) and id != -1:
@@ -64,7 +64,7 @@ class model(object):
             del(self.data['id'])
 
     def __fetch_by_id(self):
-        fields = ', '.join(['`%s`' % k for k in self.dataModel.keys()])
+        fields = self.dataModel.keys()
         # sql = "SELECT %s FROM `%s` WHERE `id` = '%d'" % (fields, self.tableName, self.id)
         db = self.__db
         if db.select(self.tableName, fields, where='`id` = %d' % self.id, limit='1'):
@@ -79,8 +79,21 @@ class model(object):
         print 'fetch ', ret
         return ret
 
+    def init_data(self):
+        data = {}
+        for k in self.dataModel.keys():
+            if self.dataModel[k] == int:
+                data[k] = 0
+            elif self.dataModel[k] == float:
+                data[k] = 0.0
+            elif self.dataModel[k] == str:
+                data[k] = ''
+            else:
+                data[k] = None
+        return data
+
     def insert(self):
-        print 'insert'
+        print 'model->insert'
         if 'id' not in self.data.keys():
             db = self.__db
             insert_id = db.insert(self.tableName, self.data)
@@ -90,7 +103,7 @@ class model(object):
             return False
 
     def update(self):
-        print 'update'
+        print 'model->update'
         if 'id' in self.data.keys() and isinstance(self.id, int):
             db = self.__db
             ret = db.update(self.tableName, self.data, where='`id` = %d' % self.id, limit='')
@@ -99,7 +112,7 @@ class model(object):
             return False
 
     def delete(self):
-        print 'delete'
+        print 'model->delete'
         if 'id' in self.data.keys() and isinstance(self.id, int):
             db = self.__db
             ret = db.delete(self.tableName, where='`id` = %d' % self.id, limit='')
@@ -113,7 +126,7 @@ class model(object):
 
     @classmethod
     def select(cls, fields='*', **kwargs):
-        print 'select'
+        print 'model->select'
 
         ret = False
         if isinstance(fields, tuple) or isinstance(fields, list):
@@ -155,19 +168,18 @@ class model(object):
         return db
 
     def __getattr__(self, key):
-        print 'get', key
-
-        if key in self.data.keys():
+        print 'model->get', key
+        if key == 'data':
+            self.data = self.init_data()
+        elif key in self.data.keys():
             return self.data[key]
             # super(model, self).__getattribute__(self.data[key])
-        elif key == 'data':
-            return self.data
         else:
             # super(model, self).__getattribute__(self, key)
             pass
 
     def __setattr__(self, key, value):
-        print 'set k:', key, 'v:', value
+        print 'model->set k:', key, 'v:', value
         if key in self.dataModel.keys() and isinstance(value, self.dataModel[key]) and key != 'id':
             print 'data[%s]:%s' % (key, value)
             if self.dataModel[key] == int:
@@ -175,7 +187,7 @@ class model(object):
             elif self.dataModel[key] == str:
                 value = str(value)
             self.data[key] = value
-        elif key == 'tableName':
+        elif key == 'tableName' or key == 'dataModel':
             print 'You can\'t modify this attribute! (%s)' % key
             return None
         else:

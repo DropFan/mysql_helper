@@ -308,7 +308,10 @@ class mysql_helper(object):
                 # print 'row', row # debug
                 _dic = {}
                 for i in range(0, len(row)):
-                    _dic[desc[i][0]] = str(row[i])
+                    try:
+                        _dic[desc[i][0]] = str(row[i])
+                    except UnicodeEncodeError, e:
+                        _dic[desc[i][0]] = unicode(row[i])
                 dic.append(_dic)
             return dic
         except MySQLdb.Error, e:
@@ -326,7 +329,10 @@ class mysql_helper(object):
             desc = self.cur.description
             dic = {}
             for i in range(0, len(res)):
-                dic[desc[i][0]] = str(res[i])
+                try:
+                    dic[desc[i][0]] = str(res[i])
+                except UnicodeEncodeError, e:
+                    dic[desc[i][0]] = unicode(res[i])
             return dic
         except MySQLdb.Error, e:
             print 'MySQLdb error : %s' % e

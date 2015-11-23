@@ -1,4 +1,4 @@
-#! /bin/env python
+#! /bin/env python2
 # -*- coding:utf-8 -*-
 # author:Tiger <DropFan@Gmail.com>
 
@@ -64,8 +64,12 @@ class model(object):
             for k in self.dataModel.keys():
                 if self.dataModel[k] == int:
                     ret[k] = int(ret[k])
+                elif self.dataModel[k] == float:
+                    ret[k] = float(ret[k])
                 elif self.dataModel[k] == str:
                     ret[k] = str(ret[k])
+                elif self.dataModel[k] == unicode:
+                    ret[k] = unicode(ret[k])
         else:
             ret = False
         print 'fetch ', ret
@@ -78,7 +82,7 @@ class model(object):
                 data[k] = 0
             elif self.dataModel[k] == float:
                 data[k] = 0.0
-            elif self.dataModel[k] == str:
+            elif self.dataModel[k] == str or self.dataModel[k] == unicode:
                 data[k] = ''
             else:
                 data[k] = None
@@ -179,6 +183,8 @@ class model(object):
                 value = float(value)
             elif self.dataModel[key] == str:
                 value = str(value)
+            elif self.dataModel[key] == unicode:
+                value = unicode(value)
             self.data[key] = value
         elif key == 'tableName' or key == 'dataModel':
             print 'You can\'t modify this attribute! (%s)' % key
